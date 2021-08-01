@@ -295,7 +295,13 @@ _bazel_build_before_install() {
     target="//:ray_pkg"
   fi
   # NOTE: Do not add build flags here. Use .bazelrc and --config instead.
-  bazel build "${target}"
+
+  # Build in debug mode if RAY_DEBUG_BUILD=1
+  if [ -z "${RAY_DEBUG_BUILD-}" ] || [ "${RAY_DEBUG_BUILD}" -ne "1" ]; then
+    bazel build "${target}"
+  else
+    bazel build --config debug "${target}"
+  fi
 }
 
 
